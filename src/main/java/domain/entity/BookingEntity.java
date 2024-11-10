@@ -14,13 +14,13 @@ public class BookingEntity {
         this.id = id;
         this.flightId = flightId;
         this.passengerNames = passengerNames;
-        this.bookingTime = bookingTime;
+        this.bookingTime = LocalDateTime.now();
     }
 
     public BookingEntity(String flightId, List<String> passenger) {
         this.flightId = flightId;
-        this.passengerNames = passenger;
-        this.bookingTime = bookingTime;
+        this.passengerNames = passengerNames;
+        this.bookingTime = LocalDateTime.now();
     }
 
     public String getId() {
