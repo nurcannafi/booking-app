@@ -105,7 +105,6 @@ public class PostgresFlightDao implements FlightDao {
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, id);
-            statement.setString(1, id);
             ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
