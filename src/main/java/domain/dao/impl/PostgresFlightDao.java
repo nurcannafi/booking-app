@@ -1,4 +1,4 @@
-package domain;
+package domain.dao.impl;
 
 import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
@@ -104,7 +104,6 @@ public class PostgresFlightDao implements FlightDao {
         String query = "SELECT *FROM flights WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, id);
             statement.setString(1, id);
             ResultSet rs = statement.executeQuery();
 
