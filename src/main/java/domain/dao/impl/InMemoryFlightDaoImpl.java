@@ -6,7 +6,7 @@ import domain.entity.FlightEntity;
 import java.util.List;
 import java.util.ArrayList;
 
-public class InMemoryFlightDao implements FlightDao {
+public class InMemoryFlightDaoImpl implements FlightDao {
 
     private final List<FlightEntity> flights = new ArrayList<>();
 

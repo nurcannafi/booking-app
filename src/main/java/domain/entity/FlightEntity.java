@@ -1,8 +1,9 @@
 package domain.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class FlightEntity {
+public class FlightEntity implements Serializable {
 
     private String id;
     private LocalDateTime dateTime;
