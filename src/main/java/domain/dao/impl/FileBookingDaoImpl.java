@@ -3,16 +3,22 @@ package domain.dao.impl;
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FileBasedBookingDaoImpl implements BookingDao {
+public class FileBookingDaoImpl implements BookingDao {
+
     private static final String FILE_PATH = "src/main/resources/bookings.txt";
     private List<BookingEntity> bookings;
 
-    public FileBasedBookingDaoImpl() {
+    public FileBookingDaoImpl() {
         this.bookings = loadFromFile();
     }
 

@@ -3,18 +3,24 @@ package domain.dao.impl;
 import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostgresFlightDao implements FlightDao {
+public class PostgresFlightDaoImpl implements FlightDao {
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/flights";
     private static final String USER = "postgres";
     private static final String PASSWORD = "4277";
     private Connection connection;
 
-    public PostgresFlightDao() {
+    public PostgresFlightDaoImpl() {
         try {
             this.connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
         } catch (SQLException e) {

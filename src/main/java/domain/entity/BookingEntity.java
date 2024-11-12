@@ -1,9 +1,10 @@
 package domain.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class BookingEntity {
+public class BookingEntity implements Serializable {
 
     private String id;
     private String flightId;
