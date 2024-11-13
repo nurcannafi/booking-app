@@ -2,6 +2,7 @@ package domain.dao.impl;
 
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
+import domain.entity.PassengerEntity;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -50,8 +51,9 @@ public class InMemoryBookingDaoImpl implements BookingDao {
     @Override
     public List<BookingEntity> findBookingsByPassengerName(String passengerName) {
         return bookings.values().stream()
-                .filter(booking -> booking.getPassengerNames().stream()
-                        .anyMatch(name -> name.equalsIgnoreCase(passengerName)))
+                .filter(booking -> booking.getPassengers().stream()
+                        .anyMatch(passenger -> passenger.getFirstName().equalsIgnoreCase(passengerName) ||
+                                passenger.getLastName().equalsIgnoreCase(passengerName)))
                 .collect(Collectors.toList());
     }
 
