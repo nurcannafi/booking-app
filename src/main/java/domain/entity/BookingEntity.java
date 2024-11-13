@@ -8,19 +8,19 @@ public class BookingEntity implements Serializable {
 
     private String id;
     private String flightId;
-    private List<String> passengerNames;
+    private List<PassengerEntity> passengers;
     private final LocalDateTime bookingTime;
 
-    public BookingEntity(String id, String flightId, List<String> passengerNames) {
+    public BookingEntity(String id, String flightId, List<PassengerEntity> passengers) {
         this.id = id;
         this.flightId = flightId;
-        this.passengerNames = passengerNames;
+        this.passengers = passengers;
         this.bookingTime = LocalDateTime.now();
     }
 
-    public BookingEntity(String flightId, List<String> passenger) {
+    public BookingEntity(String flightId, List<PassengerEntity> passengers) {
         this.flightId = flightId;
-        this.passengerNames = passengerNames;
+        this.passengers = passengers;
         this.bookingTime = LocalDateTime.now();
     }
 
@@ -40,12 +40,12 @@ public class BookingEntity implements Serializable {
         this.flightId = flightId;
     }
 
-    public List<String> getPassengerNames() {
-        return passengerNames;
+    public List<PassengerEntity> getPassengers() {
+        return passengers;
     }
 
-    public void setPassengerNames(List<String> passengerNames) {
-        this.passengerNames = passengerNames;
+    public void setPassengerNames(List<PassengerEntity> passengers) {
+        this.passengers = passengers;
     }
 
     public LocalDateTime getBookingTime() {
@@ -55,6 +55,6 @@ public class BookingEntity implements Serializable {
     @Override
     public String toString() {
         return String.format("BookingEntity{id='%s', flightId='%s', passengerNames='%s', bookingTime='%s'}", id,
-                flightId, passengerNames, bookingTime);
+                flightId, passengers, bookingTime);
     }
 }

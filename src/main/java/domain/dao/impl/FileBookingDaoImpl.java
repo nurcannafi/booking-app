@@ -80,8 +80,9 @@ public class FileBookingDaoImpl implements BookingDao {
     @Override
     public List<BookingEntity> findBookingsByPassengerName(String passengerName) {
         return bookings.stream()
-                .filter(booking -> booking.getPassengerNames().stream()
-                        .anyMatch(name -> name.equalsIgnoreCase(passengerName)))
+                .filter(booking -> booking.getPassengers().stream()
+                        .anyMatch(passenger -> passenger.getFirstName().equalsIgnoreCase(passengerName) ||
+                                passenger.getLastName().equalsIgnoreCase(passengerName)))
                 .collect(Collectors.toList());
     }
 

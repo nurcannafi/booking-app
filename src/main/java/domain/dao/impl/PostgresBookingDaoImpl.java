@@ -2,6 +2,7 @@ package domain.dao.impl;
 
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
+import domain.entity.PassengerEntity;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,8 +12,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PostgresBookingDaoImpl implements BookingDao {
 
@@ -35,7 +38,9 @@ public class PostgresBookingDaoImpl implements BookingDao {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, booking.getId());
             statement.setString(2, booking.getFlightId());
-            statement.setString(3, String.join(",", booking.getPassengerNames()));
+            statement.setString(3, String.join(",", booking.getPassengers().stream()
+                    .map(passenger -> passenger.getFirstName() + " " + passenger.getLastName())
+                    .collect(Collectors.toList())));
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,12 +55,14 @@ public class PostgresBookingDaoImpl implements BookingDao {
             statement.setString(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                List<String> passengerNames = List.of(resultSet.getString("passenger_names")
-                        .split(","));
+                String passengerNamesString = resultSet.getString("passenger_names");
+                List<PassengerEntity> passengerEntities = Arrays.stream(passengerNamesString.split(","))
+                        .map(name -> new PassengerEntity(name.split(" ")[0], name.split(" ")[1], -1))
+                        .collect(Collectors.toList());
                 BookingEntity booking = new BookingEntity(
                         resultSet.getString("id"),
                         resultSet.getString("flight_id"),
-                        passengerNames
+                        passengerEntities
                 );
                 return Optional.of(booking);
             }
@@ -72,11 +79,14 @@ public class PostgresBookingDaoImpl implements BookingDao {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
-                List<String> passengerNames = List.of(resultSet.getString("passenger_names").split(","));
+                String passengerNamesString = resultSet.getString("passenger_names");
+                List<PassengerEntity> passengerEntities = Arrays.stream(passengerNamesString.split(","))
+                        .map(name -> new PassengerEntity(name.split(" ")[0], name.split(" ")[1], -1))
+                        .collect(Collectors.toList());
                 bookings.add(new BookingEntity(
                         resultSet.getString("id"),
                         resultSet.getString("flight_id"),
-                        passengerNames
+                        passengerEntities
                 ));
             }
         } catch (SQLException e) {
@@ -90,7 +100,10 @@ public class PostgresBookingDaoImpl implements BookingDao {
         String query = "UPDATE bookings SET flight_id = ?, passenger_names = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, booking.getFlightId());
-            statement.setString(2, String.join(",", booking.getPassengerNames()));
+            String passengersNames = booking.getPassengers().stream()
+                    .map(p -> p.getFirstName() + " " + p.getLastName())
+                    .collect(Collectors.joining(","));
+            statement.setString(2, String.join(",", passengersNames));
             statement.setString(3, booking.getId());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -119,11 +132,14 @@ public class PostgresBookingDaoImpl implements BookingDao {
             statement.setString(1, "%" + passengerName + "%");
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                List<String> passengerNames = List.of(rs.getString("passenger_names").split(","));
+                String passengerNamesString = rs.getString("passenger_names");
+                List<PassengerEntity> passengerEntities = Arrays.stream(passengerNamesString.split(","))
+                        .map(name -> new PassengerEntity(name.split(" ")[0], name.split(" ")[1], -1))
+                        .collect(Collectors.toList());
                 bookings.add(new BookingEntity(
                         rs.getString("id"),
                         rs.getString("flight_id"),
-                        passengerNames
+                        passengerEntities
                 ));
             }
         } catch (SQLException e) {
