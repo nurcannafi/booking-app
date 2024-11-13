@@ -2,6 +2,7 @@ package domain.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class FlightEntity implements Serializable {
 
@@ -12,15 +13,7 @@ public class FlightEntity implements Serializable {
     private int availableSeats;
 
     public FlightEntity(LocalDateTime departureTime, String departureLocation, String destination, int availableSeats) {
-        this.departureTime = departureTime;
-        this.departureLocation = departureLocation;
-        this.destination = destination;
-        this.availableSeats = availableSeats;
-    }
-
-    public FlightEntity(String id, LocalDateTime departureTime, String departureLocation, String destination
-            , int availableSeats) {
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.departureTime = departureTime;
         this.departureLocation = departureLocation;
         this.destination = destination;
