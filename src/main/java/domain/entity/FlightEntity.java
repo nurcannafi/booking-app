@@ -6,19 +6,23 @@ import java.time.LocalDateTime;
 public class FlightEntity implements Serializable {
 
     private String id;
-    private LocalDateTime dateTime;
+    private LocalDateTime departureTime;
+    private String departureLocation;
     private String destination;
     private int availableSeats;
 
-    public FlightEntity(LocalDateTime dateTime, String destination, int availableSeats) {
-        this.dateTime = dateTime;
+    public FlightEntity(LocalDateTime departureTime, String departureLocation, String destination, int availableSeats) {
+        this.departureTime = departureTime;
+        this.departureLocation = departureLocation;
         this.destination = destination;
         this.availableSeats = availableSeats;
     }
 
-    public FlightEntity(String id, LocalDateTime dateTime, String destination, int availableSeats) {
+    public FlightEntity(String id, LocalDateTime departureTime, String departureLocation, String destination
+            , int availableSeats) {
         this.id = id;
-        this.dateTime = dateTime;
+        this.departureTime = departureTime;
+        this.departureLocation = departureLocation;
         this.destination = destination;
         this.availableSeats = availableSeats;
     }
@@ -31,12 +35,20 @@ public class FlightEntity implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public String getDepartureLocation() {
+        return departureLocation;
+    }
+
+    public void setDepartureLocation(String departureLocation) {
+        this.departureLocation = departureLocation;
     }
 
     public String getDestination() {
@@ -57,7 +69,8 @@ public class FlightEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("FlightEntity{id='%s', dateTime=%s, destination='%s', availableSeats=%d}", id, dateTime,
-                destination, availableSeats);
+        return String.format("FlightEntity{id='%s', departureTime=%s, departureLocation='%s', destination='%s'" +
+                        ", availableSeats=%d}",
+                id, departureTime, departureLocation, destination, availableSeats);
     }
 }

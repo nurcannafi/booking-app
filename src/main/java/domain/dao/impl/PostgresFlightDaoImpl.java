@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PostgresFlightDaoImpl implements FlightDao {
 
@@ -41,6 +42,7 @@ public class PostgresFlightDaoImpl implements FlightDao {
                 flights.add(new FlightEntity(
                         res.getString("id"),
                         res.getTimestamp("date_time").toLocalDateTime(),
+                        res.getString("departure_location"),
                         res.getString("destination"),
                         res.getInt("available_seats")
                 ));
@@ -50,6 +52,31 @@ public class PostgresFlightDaoImpl implements FlightDao {
         }
         return flights;
     }
+
+    @Override
+    public List<FlightEntity> findFlightsByDepartureLocation(String departureLocation) {
+        List<FlightEntity> flights = new ArrayList<>();
+        String query = "SELECT * FROM flights WHERE departure_location = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, departureLocation);
+            ResultSet res = statement.executeQuery();
+
+            while (res.next()) {
+                flights.add(new FlightEntity(
+                        res.getString("id"),
+                        res.getTimestamp("date_time").toLocalDateTime(),
+                        res.getString("departure_location"),
+                        res.getString("destination"),
+                        res.getInt("available_seats")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return flights;
+    }
+
 
     @Override
     public List<FlightEntity> findAvailableFlights(int minimumSeats) {
@@ -64,6 +91,7 @@ public class PostgresFlightDaoImpl implements FlightDao {
                 flights.add(new FlightEntity(
                         res.getString("id"),
                         res.getTimestamp("date_time").toLocalDateTime(),
+                        res.getString("departure_location"),
                         res.getString("destination"),
                         res.getInt("available_seats")
                 ));
@@ -75,13 +103,12 @@ public class PostgresFlightDaoImpl implements FlightDao {
     }
 
     @Override
-    public boolean updateAvailableSeats(String fligthId, int newAvailableSeats) {
+    public boolean updateAvailableSeats(String flightId, int newAvailableSeats) {
         String query = "UPDATE flights SET available_seats = ? WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-
             statement.setInt(1, newAvailableSeats);
-            statement.setString(2, fligthId);
+            statement.setString(2, flightId);
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -92,12 +119,13 @@ public class PostgresFlightDaoImpl implements FlightDao {
 
     @Override
     public boolean add(FlightEntity entity) {
-        String query = "INSERT INTO flights(date_time, destination, available_seats) VALUES (?, ?, ?)";
+        String query = "INSERT INTO flights(date_time, departure_location, destination, available_seats) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setTimestamp(1, Timestamp.valueOf(entity.getDateTime()));
-            statement.setString(2, entity.getDestination());
-            statement.setInt(3, entity.getAvailableSeats());
+            statement.setTimestamp(1, Timestamp.valueOf(entity.getDepartureTime()));
+            statement.setString(2, entity.getDepartureLocation());
+            statement.setString(3, entity.getDestination());
+            statement.setInt(4, entity.getAvailableSeats());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,25 +134,27 @@ public class PostgresFlightDaoImpl implements FlightDao {
     }
 
     @Override
-    public FlightEntity getById(String id) {
-        String query = "SELECT *FROM flights WHERE id = ?";
+    public Optional<FlightEntity> getById(String id) {
+        String query = "SELECT * FROM flights WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, id);
             ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
-                return new FlightEntity(
+                FlightEntity flight = new FlightEntity(
                         rs.getString("id"),
                         rs.getTimestamp("date_time").toLocalDateTime(),
+                        rs.getString("departure_location"),
                         rs.getString("destination"),
                         rs.getInt("available_seats")
                 );
+                return Optional.of(flight);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -138,6 +168,7 @@ public class PostgresFlightDaoImpl implements FlightDao {
                 flights.add(new FlightEntity(
                         rs.getString("id"),
                         rs.getTimestamp("date_time").toLocalDateTime(),
+                        rs.getString("departure_location"),
                         rs.getString("destination"),
                         rs.getInt("available_seats")
                 ));
@@ -150,12 +181,13 @@ public class PostgresFlightDaoImpl implements FlightDao {
 
     @Override
     public boolean update(FlightEntity entity) {
-        String query = "UPDATE flights SET date_time = ?, destination = ?, available_seats = ? WHERE id = ?";
+        String query = "UPDATE flights SET date_time = ?, departure_location = ?, destination = ?, available_seats = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setTimestamp(1, Timestamp.valueOf(entity.getDateTime()));
-            statement.setString(2, entity.getDestination());
-            statement.setInt(3, entity.getAvailableSeats());
-            statement.setString(4, entity.getId());
+            statement.setTimestamp(1, Timestamp.valueOf(entity.getDepartureTime()));
+            statement.setString(2, entity.getDepartureLocation());
+            statement.setString(3, entity.getDestination());
+            statement.setInt(4, entity.getAvailableSeats());
+            statement.setString(5, entity.getId());
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -176,20 +208,5 @@ public class PostgresFlightDaoImpl implements FlightDao {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public long count() {
-        String query = "SELECT COUNT(*) FROM flights";
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            ResultSet res = statement.executeQuery();
-            if (res.next()) {
-                return res.getLong(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 }

@@ -3,30 +3,40 @@ package domain.dao.impl;
 import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class InMemoryFlightDaoImpl implements FlightDao {
 
-    private final List<FlightEntity> flights = new ArrayList<>();
+    private final Map<String, FlightEntity> flights = new HashMap<>();
 
     @Override
     public List<FlightEntity> findFlightsByDestination(String destination) {
-        return flights.stream()
+        return flights.values().stream()
                 .filter(flight -> flight.getDestination().equalsIgnoreCase(destination))
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FlightEntity> findFlightsByDepartureLocation(String departureLocation) {
+        return flights.values().stream()
+                .filter(flight -> flight.getDepartureLocation().equalsIgnoreCase(departureLocation))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<FlightEntity> findAvailableFlights(int minimumSeats) {
-        return flights.stream()
+        return flights.values().stream()
                 .filter(flight -> flight.getAvailableSeats() >= minimumSeats)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
-    public boolean updateAvailableSeats(String fligthId, int newAvailableSeats) {
-        FlightEntity flight = getById(fligthId);
+    public boolean updateAvailableSeats(String flightId, int newAvailableSeats) {
+        FlightEntity flight = flights.get(flightId);
         if (flight != null) {
             flight.setAvailableSeats(newAvailableSeats);
             return true;
@@ -36,40 +46,31 @@ public class InMemoryFlightDaoImpl implements FlightDao {
 
     @Override
     public boolean add(FlightEntity entity) {
-        return flights.add(entity);
+        flights.put(entity.getId(), entity);
+        return true;
     }
 
     @Override
-    public FlightEntity getById(String id) {
-        return flights.stream()
-                .filter(flight -> flight.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public Optional<FlightEntity> getById(String id) {
+        return Optional.ofNullable(flights.get(id));
     }
 
     @Override
     public List<FlightEntity> getAll() {
-        return new ArrayList<>(flights);
+        return flights.values().stream().collect(Collectors.toList());
     }
 
     @Override
     public boolean update(FlightEntity entity) {
-        for (int i = 0; i < flights.size(); i++) {
-            if (flights.get(i).getId().equals(entity.getId())) {
-                flights.set(i, entity);
-                return true;
-            }
+        if (flights.containsKey(entity.getId())) {
+            flights.put(entity.getId(), entity);
+            return true;
         }
         return false;
     }
 
     @Override
     public boolean delete(String id) {
-        return flights.removeIf(flight -> flight.getId().equals(id));
-    }
-
-    @Override
-    public long count() {
-        return flights.size();
+        return flights.remove(id) != null;
     }
 }

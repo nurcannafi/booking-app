@@ -11,12 +11,13 @@ import java.io.ObjectOutputStream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FileBookingDaoImpl implements BookingDao {
 
     private static final String FILE_PATH = "src/main/resources/bookings.txt";
-    private List<BookingEntity> bookings;
+    private final List<BookingEntity> bookings;
 
     public FileBookingDaoImpl() {
         this.bookings = loadFromFile();
@@ -46,11 +47,10 @@ public class FileBookingDaoImpl implements BookingDao {
     }
 
     @Override
-    public BookingEntity getById(String id) {
+    public Optional<BookingEntity> getById(String id) {
         return bookings.stream()
                 .filter(booking -> booking.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override
@@ -75,18 +75,6 @@ public class FileBookingDaoImpl implements BookingDao {
         boolean removed = bookings.removeIf(booking -> booking.getId().equals(id));
         if (removed) saveToFile();
         return removed;
-    }
-
-    @Override
-    public long count() {
-        return bookings.size();
-    }
-
-    @Override
-    public List<BookingEntity> findBookingsByFlightId(String flightId) {
-        return bookings.stream()
-                .filter(booking -> booking.getFlightId().equals(flightId))
-                .collect(Collectors.toList());
     }
 
     @Override
