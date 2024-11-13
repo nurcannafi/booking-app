@@ -3,72 +3,57 @@ package domain.dao.impl;
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
 
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InMemoryBookingDaoImpl implements BookingDao {
 
-    private List<BookingEntity> bookings;
+    private final Map<String, BookingEntity> bookings;
 
     public InMemoryBookingDaoImpl() {
-        this.bookings = new ArrayList<>();
+        this.bookings = new HashMap<>();
     }
 
     @Override
     public boolean add(BookingEntity bookingEntity) {
-        return bookings.add(bookingEntity);
+        bookings.put(bookingEntity.getId(), bookingEntity);
+        return true;
     }
 
     @Override
-    public BookingEntity getById(String id) {
-        return bookings.stream()
-                .filter(booking -> booking.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public Optional<BookingEntity> getById(String id) {
+        return Optional.ofNullable(bookings.get(id));
     }
 
     @Override
     public List<BookingEntity> getAll() {
-        return new ArrayList<>(bookings);
+        return bookings.values().stream().collect(Collectors.toList());
     }
 
     @Override
     public boolean update(BookingEntity bookingEntity) {
-        for (int i = 0; i < bookings.size(); i++) {
-            if (bookings.get(i).getId().equals(bookingEntity.getId())) {
-                bookings.set(i, bookingEntity);
-                return true;
-            }
+        if (bookings.containsKey(bookingEntity.getId())) {
+            bookings.put(bookingEntity.getId(), bookingEntity);
+            return true;
         }
         return false;
     }
 
     @Override
     public boolean delete(String id) {
-        return bookings.removeIf(booking -> booking.getId().equals(id));
-    }
-
-    @Override
-    public long count() {
-        return bookings.size();
-    }
-
-    @Override
-    public List<BookingEntity> findBookingsByFlightId(String flightId) {
-        return bookings.stream()
-                .filter(booking -> booking.getFlightId().equals(flightId))
-                .collect(Collectors.toList());
+        return bookings.remove(id) != null;
     }
 
     @Override
     public List<BookingEntity> findBookingsByPassengerName(String passengerName) {
-        return bookings.stream()
+        return bookings.values().stream()
                 .filter(booking -> booking.getPassengerNames().stream()
                         .anyMatch(name -> name.equalsIgnoreCase(passengerName)))
                 .collect(Collectors.toList());
     }
-
 
     @Override
     public boolean cancelBooking(String bookingId) {

@@ -1,4 +1,4 @@
-package domain.dto;
+package model.dto;
 
 public class FlightDto {
     private String id;

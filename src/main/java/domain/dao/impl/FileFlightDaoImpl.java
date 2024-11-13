@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FileFlightDaoImpl implements FlightDao {
 
@@ -45,11 +46,10 @@ public class FileFlightDaoImpl implements FlightDao {
     }
 
     @Override
-    public FlightEntity getById(String id) {
+    public Optional<FlightEntity> getById(String id) {
         return flights.stream()
                 .filter(flight -> flight.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override
@@ -77,14 +77,16 @@ public class FileFlightDaoImpl implements FlightDao {
     }
 
     @Override
-    public long count() {
-        return flights.size();
-    }
-
-    @Override
     public List<FlightEntity> findFlightsByDestination(String destination) {
         return flights.stream()
                 .filter(flight -> flight.getDestination().equalsIgnoreCase(destination))
+                .toList();
+    }
+
+    @Override
+    public List<FlightEntity> findFlightsByDepartureLocation(String departureLocation) {
+        return flights.stream()
+                .filter(flight -> flight.getDepartureLocation().equalsIgnoreCase(departureLocation))
                 .toList();
     }
 

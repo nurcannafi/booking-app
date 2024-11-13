@@ -9,7 +9,7 @@ public class BookingEntity implements Serializable {
     private String id;
     private String flightId;
     private List<String> passengerNames;
-    private LocalDateTime bookingTime;
+    private final LocalDateTime bookingTime;
 
     public BookingEntity(String id, String flightId, List<String> passengerNames) {
         this.id = id;
@@ -54,6 +54,7 @@ public class BookingEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("BookingEntity{id='%s', flightId='%s', passengerNames='%s', bookingTime='%s'}", id, flightId, passengerNames, bookingTime);
+        return String.format("BookingEntity{id='%s', flightId='%s', passengerNames='%s', bookingTime='%s'}", id,
+                flightId, passengerNames, bookingTime);
     }
 }

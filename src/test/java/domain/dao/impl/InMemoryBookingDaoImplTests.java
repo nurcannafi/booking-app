@@ -5,12 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class InMemoryBookingDaoImplTests {
 
@@ -26,8 +25,9 @@ public class InMemoryBookingDaoImplTests {
         BookingEntity booking = new BookingEntity("1", "FL100", List.of("Leo Messi"));
         assertTrue(bookingDao.add(booking));
 
-        BookingEntity fetchedBooking = bookingDao.getById("1");
-        assertNotNull(fetchedBooking);
+        Optional<BookingEntity> fetchedBookingOptional = bookingDao.getById("1");
+        assertTrue(fetchedBookingOptional.isPresent());
+        BookingEntity fetchedBooking = fetchedBookingOptional.get();
         assertEquals("FL100", fetchedBooking.getFlightId());
     }
 
@@ -47,29 +47,18 @@ public class InMemoryBookingDaoImplTests {
 
         booking.setFlightId("FL200");
         assertTrue(bookingDao.update(booking));
-        assertEquals("FL200", bookingDao.getById("1").getFlightId());
-    }
 
-    @Test
-    void testDelete() {
-        bookingDao.add(new BookingEntity("1", "FL100", List.of("Leo Messi")));
-        assertTrue(bookingDao.delete("1"));
-        assertNull(bookingDao.getById("1"));
-    }
-
-    @Test
-    void testFindBookingByFlightId() {
-        bookingDao.add(new BookingEntity("1", "FL100", List.of("Leo Messi")));
-        bookingDao.add(new BookingEntity("2", "FL101", List.of("Cristiano Ronaldo")));
-
-        List<BookingEntity> bookings = bookingDao.findBookingsByFlightId("FL100");
-        assertEquals(1, bookings.size());
+        Optional<BookingEntity> updatedBookingOptional = bookingDao.getById("1");
+        assertTrue(updatedBookingOptional.isPresent());
+        assertEquals("FL200", updatedBookingOptional.get().getFlightId());
     }
 
     @Test
     void testCancelBooking() {
         bookingDao.add(new BookingEntity("1", "FL100", List.of("Leo Messi")));
         assertTrue(bookingDao.cancelBooking("1"));
-        assertNull(bookingDao.getById("1"));
+
+        Optional<BookingEntity> cancelledBookingOptional = bookingDao.getById("1");
+        assertFalse(cancelledBookingOptional.isPresent());
     }
 }

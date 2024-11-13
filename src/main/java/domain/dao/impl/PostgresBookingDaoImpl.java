@@ -12,6 +12,7 @@ import java.sql.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PostgresBookingDaoImpl implements BookingDao {
 
@@ -43,23 +44,25 @@ public class PostgresBookingDaoImpl implements BookingDao {
     }
 
     @Override
-    public BookingEntity getById(String id) {
+    public Optional<BookingEntity> getById(String id) {
         String query = "SELECT * FROM bookings WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                List<String> passengerNames = List.of(resultSet.getString("passenger_names").split(","));
-                return new BookingEntity(
+                List<String> passengerNames = List.of(resultSet.getString("passenger_names")
+                        .split(","));
+                BookingEntity booking = new BookingEntity(
                         resultSet.getString("id"),
                         resultSet.getString("flight_id"),
                         passengerNames
                 );
+                return Optional.of(booking);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -106,41 +109,6 @@ public class PostgresBookingDaoImpl implements BookingDao {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public long count() {
-        String query = "SELECT COUNT(*) FROM bookings";
-        try (Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery(query)) {
-            if (rs.next()) {
-                return rs.getLong(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    @Override
-    public List<BookingEntity> findBookingsByFlightId(String flightId) {
-        List<BookingEntity> bookings = new ArrayList<>();
-        String query = "SELECT * FROM bookings WHERE flight_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, flightId);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                List<String> passengerNames = List.of(resultSet.getString("passenger_names").split(","));
-                bookings.add(new BookingEntity(
-                        resultSet.getString("id"),
-                        resultSet.getString("flight_id"),
-                        passengerNames
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return bookings;
     }
 
     @Override
