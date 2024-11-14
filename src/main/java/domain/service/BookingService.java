@@ -1,10 +1,12 @@
-package service;
+package domain.service;
 
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
 import domain.entity.FlightEntity;
 import domain.entity.PassengerEntity;
-import model.dto.BookingDto;
+import domain.exception.BookingNotFoundException;
+import domain.exception.InvalidBookingException;
+import domain.dto.BookingDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +55,8 @@ public class BookingService {
     }
 
     public Optional<BookingEntity> getBookingById(String id) {
-        return bookingDao.getById(id);
+        return Optional.ofNullable(bookingDao.getById(id))
+                .orElseThrow(() -> new BookingNotFoundException(id));
     }
 
     public List<BookingEntity> getAllBookings() {
@@ -62,21 +65,21 @@ public class BookingService {
 
     public List<BookingEntity> findBookingsByPassengerName(String passengerName) {
         if (passengerName == null || passengerName.isEmpty()) {
-            throw new IllegalArgumentException("Passenger name cannot be null or empty");
+            throw new InvalidBookingException("Passenger name cannot be null or empty");
         }
         return bookingDao.findBookingsByPassengerName(passengerName);
     }
 
     public boolean cancelBooking(String bookingId) {
         if (bookingId == null || bookingId.isEmpty()) {
-            throw new IllegalArgumentException("Booking ID cannot be null or empty");
+            throw new InvalidBookingException("Booking ID cannot be null or empty");
         }
         return bookingDao.cancelBooking(bookingId);
     }
 
     public boolean updateBooking(BookingDto bookingDto) {
         if (bookingDto.getId() == null || bookingDto.getId().isEmpty()) {
-            throw new IllegalArgumentException("Booking ID cannot be null or empty");
+            throw new InvalidBookingException("Booking ID cannot be null or empty");
         }
 
         List<PassengerEntity> passengers = bookingDto.getPassengerNames().stream()

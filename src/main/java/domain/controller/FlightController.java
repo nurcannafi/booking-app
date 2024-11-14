@@ -1,7 +1,7 @@
-package controller;
+package domain.controller;
 
 import domain.entity.FlightEntity;
-import service.FlightService;
+import domain.service.FlightService;
 
 import java.util.List;
 import java.util.Optional;
