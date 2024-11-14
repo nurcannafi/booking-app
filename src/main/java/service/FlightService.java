@@ -10,41 +10,42 @@ public class FlightService {
 
     private final FlightDao flightDao;
 
-    public FlightService(FlightDao flightDao){
+    public FlightService(FlightDao flightDao) {
         this.flightDao = flightDao;
     }
 
-    public boolean addFlight(FlightEntity flightEntity){
-        if(flightEntity.getAvailableSeats() > 0 && flightEntity.getDestination() != null && flightEntity.getDepartureLocation() != null){
+    public boolean addFlight(FlightEntity flightEntity) {
+        if (flightEntity.getAvailableSeats() > 0 && flightEntity.getDestination() != null
+                && flightEntity.getDepartureLocation() != null) {
             return flightDao.add(flightEntity);
         }
         return false;
     }
 
-    public Optional<FlightEntity> getFlightById(String id){
+    public Optional<FlightEntity> getFlightById(String id) {
         return flightDao.getById(id);
     }
 
-    public List<FlightEntity> getAllFlights(){
+    public List<FlightEntity> getAllFlights() {
         return flightDao.getAll();
     }
 
     public List<FlightEntity> findFlightsByDestination(String destination) throws IllegalAccessException {
-        if(destination == null || destination.isEmpty()){
+        if (destination == null || destination.isEmpty()) {
             throw new IllegalAccessException("Destination cannot be null or empty");
         }
         return flightDao.findFlightsByDestination(destination);
     }
 
     public List<FlightEntity> findAvailableFlights(int minimumSeats) throws IllegalAccessException {
-        if(minimumSeats < 1){
+        if (minimumSeats < 1) {
             throw new IllegalAccessException("Minimum seats must be at least 1");
         }
         return flightDao.findAvailableFlights(minimumSeats);
     }
 
     public boolean updateFlight(FlightEntity flight) throws IllegalAccessException {
-        if(flight.getId() == null || flight.getId().isEmpty()){
+        if (flight.getId() == null || flight.getId().isEmpty()) {
             throw new IllegalAccessException("Flight ID cannot be null or empty");
         }
         return flightDao.update(flight);

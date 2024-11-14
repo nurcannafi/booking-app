@@ -3,8 +3,11 @@ package service;
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
 import domain.entity.FlightEntity;
+import domain.entity.PassengerEntity;
+import model.dto.BookingDto;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class BookingService {
@@ -17,9 +20,33 @@ public class BookingService {
         this.flightService = flightService;
     }
 
-    public boolean addBooking(BookingEntity bookingEntity) {
-        if (bookingEntity.getFlightId() != null && bookingEntity.getPassengers() != null
-                && !bookingEntity.getPassengers().isEmpty()) {
+    public List<FlightEntity> searchFlights(String destination, String date, int numberOfPeople) {
+        List<FlightEntity> allFlights = flightService.getAllFlights();
+        return allFlights.stream()
+                .filter(flight -> flight.getDestination().equals(destination) && flight.getDepartureTime().equals(date))
+                .filter(flight -> flight.getAvailableSeats() >= numberOfPeople)
+                .toList();
+    }
+
+    public boolean addBooking(BookingDto bookingDto) {
+        if (bookingDto.getFlightId() != null && bookingDto.getPassengerNames() != null
+                && !bookingDto.getPassengerNames().isEmpty()) {
+
+            List<PassengerEntity> passengers = bookingDto.getPassengerNames().stream()
+                    .map(name -> {
+                        String[] passengerData = name.split(",");
+                        if (passengerData.length == 3) {
+                            String firstName = passengerData[0];
+                            String lastName = passengerData[1];
+                            int age = Integer.parseInt(passengerData[2]);
+                            return new PassengerEntity(firstName, lastName, age);
+                        }
+                        return null;
+                    })
+                    .filter(passenger -> passenger != null)
+                    .toList();
+
+            BookingEntity bookingEntity = new BookingEntity(bookingDto.getFlightId(), passengers);
             return bookingDao.add(bookingEntity);
         }
         return false;
@@ -35,7 +62,7 @@ public class BookingService {
 
     public List<BookingEntity> findBookingsByPassengerName(String passengerName) {
         if (passengerName == null || passengerName.isEmpty()) {
-            throw new IllegalArgumentException("Passenger name cannot be null or empty ");
+            throw new IllegalArgumentException("Passenger name cannot be null or empty");
         }
         return bookingDao.findBookingsByPassengerName(passengerName);
     }
@@ -47,24 +74,26 @@ public class BookingService {
         return bookingDao.cancelBooking(bookingId);
     }
 
-    public boolean updateBooking(BookingEntity bookingEntity) {
-        if (bookingEntity.getId() == null || bookingEntity.getId().isEmpty()) {
-            throw new IllegalArgumentException("Flight ID cannot be null or empty");
+    public boolean updateBooking(BookingDto bookingDto) {
+        if (bookingDto.getId() == null || bookingDto.getId().isEmpty()) {
+            throw new IllegalArgumentException("Booking ID cannot be null or empty");
         }
+
+        List<PassengerEntity> passengers = bookingDto.getPassengerNames().stream()
+                .map(name -> {
+                    String[] passengerData = name.split(",");
+                    if (passengerData.length == 3) {
+                        String firstName = passengerData[0];
+                        String lastName = passengerData[1];
+                        int age = Integer.parseInt(passengerData[2]);
+                        return new PassengerEntity(firstName, lastName, age);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        BookingEntity bookingEntity = new BookingEntity(bookingDto.getId(), bookingDto.getFlightId(), passengers);
         return bookingDao.update(bookingEntity);
     }
-
-    public List<BookingEntity> findBookingsByDestination(String destination) throws IllegalAccessException {
-        if (destination == null || destination.isEmpty()) {
-            throw new IllegalArgumentException("Destination cannot be null or empty");
-        }
-        List<FlightEntity> flights = flightService.findFlightsByDestination(destination);
-        List<String> flightIds = flights.stream()
-                .map(FlightEntity::getId)
-                .toList();
-        return bookingDao.getAll().stream()
-                .filter(booking -> flightIds.contains(booking.getFlightId()))
-                .toList();
-    }
-
 }
