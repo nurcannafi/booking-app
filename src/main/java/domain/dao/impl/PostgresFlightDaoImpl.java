@@ -40,7 +40,6 @@ public class PostgresFlightDaoImpl implements FlightDao {
 
             while (res.next()) {
                 flights.add(new FlightEntity(
-                        res.getString("id"),
                         res.getTimestamp("date_time").toLocalDateTime(),
                         res.getString("departure_location"),
                         res.getString("destination"),
@@ -64,7 +63,6 @@ public class PostgresFlightDaoImpl implements FlightDao {
 
             while (res.next()) {
                 flights.add(new FlightEntity(
-                        res.getString("id"),
                         res.getTimestamp("date_time").toLocalDateTime(),
                         res.getString("departure_location"),
                         res.getString("destination"),
@@ -89,7 +87,6 @@ public class PostgresFlightDaoImpl implements FlightDao {
 
             while (res.next()) {
                 flights.add(new FlightEntity(
-                        res.getString("id"),
                         res.getTimestamp("date_time").toLocalDateTime(),
                         res.getString("departure_location"),
                         res.getString("destination"),
@@ -143,7 +140,6 @@ public class PostgresFlightDaoImpl implements FlightDao {
 
             if (rs.next()) {
                 FlightEntity flight = new FlightEntity(
-                        rs.getString("id"),
                         rs.getTimestamp("date_time").toLocalDateTime(),
                         rs.getString("departure_location"),
                         rs.getString("destination"),
@@ -166,7 +162,6 @@ public class PostgresFlightDaoImpl implements FlightDao {
              ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 flights.add(new FlightEntity(
-                        rs.getString("id"),
                         rs.getTimestamp("date_time").toLocalDateTime(),
                         rs.getString("departure_location"),
                         rs.getString("destination"),
