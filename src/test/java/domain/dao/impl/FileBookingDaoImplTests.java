@@ -1,6 +1,7 @@
 package domain.dao.impl;
 
 import domain.entity.BookingEntity;
+import domain.entity.PassengerEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,19 +30,25 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testAddAndGetById() {
-        BookingEntity booking = new BookingEntity("1", "FL100", List.of("Leo Messi"));
+        List<PassengerEntity> passengers = List.of(new PassengerEntity("Leo", "Messi", 35));
+        BookingEntity booking = new BookingEntity("1", "FL100", passengers);
         assertTrue(bookingDao.add(booking));
 
         Optional<BookingEntity> fetchedBookingOptional = bookingDao.getById("1");
         assertTrue(fetchedBookingOptional.isPresent());
         BookingEntity fetchedBooking = fetchedBookingOptional.get();
         assertEquals("FL100", fetchedBooking.getFlightId());
+        assertEquals(passengers, fetchedBooking.getPassengers());
     }
 
     @Test
     void testGetAll() {
-        bookingDao.add(new BookingEntity("1", "FL100", List.of("Leo Messi")));
-        bookingDao.add(new BookingEntity("2", "FL101", List.of("Cristiano Ronaldo")));
+        List<PassengerEntity> passengers1 = List.of(new PassengerEntity("Leo", "Messi", 35));
+        List<PassengerEntity> passengers2 = List.of(new PassengerEntity("Cristiano", "Ronaldo"
+                , 37));
+
+        bookingDao.add(new BookingEntity("1", "FL100", passengers1));
+        bookingDao.add(new BookingEntity("2", "FL101", passengers2));
 
         List<BookingEntity> bookings = bookingDao.getAll();
         assertEquals(2, bookings.size());
@@ -49,7 +56,8 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testUpdate() {
-        BookingEntity booking = new BookingEntity("1", "FL100", List.of("Leo Messi"));
+        List<PassengerEntity> passengers = List.of(new PassengerEntity("Leo", "Messi", 35));
+        BookingEntity booking = new BookingEntity("1", "FL100", passengers);
         assertTrue(bookingDao.add(booking));
 
         booking.setFlightId("FL200");
@@ -62,7 +70,8 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testCancelBooking() {
-        bookingDao.add(new BookingEntity("1", "FL100", List.of("Leo Messi")));
+        List<PassengerEntity> passengers = List.of(new PassengerEntity("Leo", "Messi", 35));
+        bookingDao.add(new BookingEntity("1", "FL100", passengers));
         assertTrue(bookingDao.cancelBooking("1"));
 
         Optional<BookingEntity> cancelledBookingOptional = bookingDao.getById("1");
