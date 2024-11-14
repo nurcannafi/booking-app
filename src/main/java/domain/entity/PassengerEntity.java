@@ -1,6 +1,7 @@
 package domain.entity;
 
 public class PassengerEntity {
+
     private String firstName;
     private String lastName;
     private int age;

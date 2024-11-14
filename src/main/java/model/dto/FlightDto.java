@@ -1,12 +1,20 @@
 package model.dto;
 
+import java.time.LocalDateTime;
+
 public class FlightDto {
+
     private String id;
     private String destination;
+    private String departureLocation;
+    private LocalDateTime departureTime;
     private int availableSeats;
 
-    public FlightDto(String id, String destination, int availableSeats) {
+    public FlightDto(String id, String destination, String departureLocation, LocalDateTime departureTime
+            , int availableSeats) {
         this.id = id;
+        this.departureLocation = departureLocation;
+        this.departureTime = departureTime;
         this.destination = destination;
         this.availableSeats = availableSeats;
     }
@@ -27,6 +35,22 @@ public class FlightDto {
         this.destination = destination;
     }
 
+    public String getDepartureLocation() {
+        return departureLocation;
+    }
+
+    public void setDepartureLocation(String departureLocation) {
+        this.departureLocation = departureLocation;
+    }
+
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
     public int getAvailableSeats() {
         return availableSeats;
     }
@@ -37,10 +61,8 @@ public class FlightDto {
 
     @Override
     public String toString() {
-        return "FlightDto{" +
-                "id='" + id + '\'' +
-                ", destination='" + destination + '\'' +
-                ", availableSeats=" + availableSeats +
-                '}';
+        return String.format("FlightDto{id='%s', departureLocation='%s', departureTime=%s, destination='%s'" +
+                        ", availableSeats=%d}",
+                id, departureLocation, departureTime, destination, availableSeats);
     }
 }
