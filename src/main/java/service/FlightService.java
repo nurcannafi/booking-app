@@ -1,4 +1,4 @@
-package domain.service;
+package service;
 
 import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class FlightService {
+
     private final FlightDao flightDao;
 
     public FlightService(FlightDao flightDao){
