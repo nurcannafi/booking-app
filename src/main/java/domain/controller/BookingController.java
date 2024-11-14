@@ -1,7 +1,7 @@
-package controller;
+package domain.controller;
 
-import model.dto.BookingDto;
-import service.BookingService;
+import domain.dto.BookingDto;
+import domain.service.BookingService;
 import domain.entity.BookingEntity;
 import domain.entity.PassengerEntity;
 
