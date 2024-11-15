@@ -1,6 +1,7 @@
 package controller;
 
 import domain.entity.FlightEntity;
+import exception.FlightNotFoundException;
 import service.FlightService;
 
 import java.util.List;
@@ -21,7 +22,10 @@ public class FlightController {
 
     public String getFlightById(String id) {
         Optional<FlightEntity> flight = flightService.getFlightById(id);
-        return flight.map(Object::toString).orElse("Flight not found.");
+        if (flight.isEmpty()) {
+            throw new FlightNotFoundException("Flight not found");
+        }
+        return flight.get().toString();
     }
 
     public List<FlightEntity> getAllFlights() {
@@ -38,17 +42,26 @@ public class FlightController {
 
     public String updateFlight(FlightEntity flight) throws IllegalAccessException {
         boolean isUpdated = flightService.updateFlight(flight);
-        return isUpdated ? "Flight updated successfully." : "Flight not found.";
+        if (!isUpdated) {
+            throw new FlightNotFoundException("Flight not found for update.");
+        }
+        return "Flight updated successfully.";
     }
 
     public String deleteFlight(String id) {
         boolean isDeleted = flightService.deleteFlight(id);
-        return isDeleted ? "Flight deleted successfully." : "Flight not found.";
+        if (!isDeleted) {
+            throw new FlightNotFoundException("Flight not found");
+        }
+        return "Flight deleted successfully.";
     }
 
     public String updateAvailableSeats(String flightId, int newAvailableSeats) {
         boolean isUpdated = flightService.updateAvailableSeats(flightId, newAvailableSeats);
-        return isUpdated ? "Available seats updated successfully." : "Flight not found.";
+        if (!isUpdated) {
+            throw new FlightNotFoundException("Flight not found");
+        }
+        return "Available seats updated successfully.";
     }
 
     public List<FlightEntity> findFlightsByDepartureLocation(String departureLocation) {

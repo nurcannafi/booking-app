@@ -1,5 +1,7 @@
 import domain.dao.BookingDao;
 import domain.dao.FlightDao;
+import domain.dao.impl.FileBookingDaoImpl;
+import domain.dao.impl.FileFlightDaoImpl;
 import domain.dao.impl.InMemoryBookingDaoImpl;
 import domain.dao.impl.InMemoryFlightDaoImpl;
 import model.dto.BookingDto;
@@ -20,14 +22,14 @@ public class BookingApp {
 
     public static void main(String[] args) {
         final FlightDao flightDao =
-                new InMemoryFlightDaoImpl();
+//                new InMemoryFlightDaoImpl();
 //                new PostgresFlightDaoImpl();
-//                new FileFlightDaoImpl();
+                new FileFlightDaoImpl();
 
         final BookingDao bookingDao =
-                new InMemoryBookingDaoImpl();
+//                new InMemoryBookingDaoImpl();
 //                new PostgresBookingDaoImpl();
-//                new FileBookingDaoImpl();
+                new FileBookingDaoImpl();
 
         FlightService flightService = new FlightService(flightDao);
         BookingService bookingService = new BookingService(bookingDao, flightService);
