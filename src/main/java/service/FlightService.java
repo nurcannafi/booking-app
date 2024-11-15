@@ -1,11 +1,10 @@
-package domain.service;
+package service;
 
 import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
-import domain.exception.InvalidFlightOperationException;
+import exception.InvalidFlightOperationException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

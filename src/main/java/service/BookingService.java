@@ -1,12 +1,12 @@
-package domain.service;
+package service;
 
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
 import domain.entity.FlightEntity;
 import domain.entity.PassengerEntity;
-import domain.exception.BookingNotFoundException;
-import domain.exception.InvalidBookingException;
-import domain.dto.BookingDto;
+import exception.BookingNotFoundException;
+import exception.InvalidBookingException;
+import model.dto.BookingDto;
 
 import java.util.List;
 import java.util.Objects;
