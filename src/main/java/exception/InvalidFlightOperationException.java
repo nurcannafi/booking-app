@@ -1,4 +1,4 @@
-package domain.exception;
+package exception;
 
 public class InvalidFlightOperationException extends RuntimeException{
 
