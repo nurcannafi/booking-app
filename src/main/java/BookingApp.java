@@ -1,6 +1,7 @@
 import domain.dao.BookingDao;
 import domain.dao.FlightDao;
-import domain.dao.impl.*;
+import domain.dao.impl.InMemoryBookingDaoImpl;
+import domain.dao.impl.InMemoryFlightDaoImpl;
 import domain.dto.BookingDto;
 import domain.entity.BookingEntity;
 import domain.entity.FlightEntity;
@@ -16,18 +17,20 @@ import java.util.List;
 import java.util.Scanner;
 
 public class BookingApp {
+
     public static void main(String[] args) {
-        FlightDao flightDaoInMemory = new InMemoryFlightDaoImpl();
-        BookingDao bookingDaoInMemory = new InMemoryBookingDaoImpl();
+        final FlightDao flightDao =
+                new InMemoryFlightDaoImpl();
+//                new PostgresFlightDaoImpl();
+//                new FileFlightDaoImpl();
 
-//        FlightDao flightDaoFile = new FileFlightDaoImpl();
-//        BookingDao bookingDaoFile = new FileBookingDaoImpl();
-//
-//        FlightDao flightDaoPostgres = new PostgresFlightDaoImpl();
-//        BookingDao bookingDaoPostgres = new PostgresBookingDaoImpl();
+        final BookingDao bookingDao =
+                new InMemoryBookingDaoImpl();
+//                new PostgresBookingDaoImpl();
+//                new FileBookingDaoImpl();
 
-        FlightService flightService = new FlightService(flightDaoInMemory);
-        BookingService bookingService = new BookingService(bookingDaoInMemory, flightService);
+        FlightService flightService = new FlightService(flightDao);
+        BookingService bookingService = new BookingService(bookingDao, flightService);
 
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
