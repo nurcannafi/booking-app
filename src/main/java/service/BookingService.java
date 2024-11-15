@@ -99,4 +99,5 @@ public class BookingService {
         BookingEntity bookingEntity = new BookingEntity(bookingDto.getId(), bookingDto.getFlightId(), passengers);
         return bookingDao.update(bookingEntity);
     }
+
 }
