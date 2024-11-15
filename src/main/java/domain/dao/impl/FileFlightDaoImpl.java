@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class FileFlightDaoImpl implements FlightDao {
 
-    private static final String FILE_PATH = "src/main/resources/flights.dat";
+    private static final String FILE_PATH = "src/main/resources/flights.txt";
     private final List<FlightEntity> flights;
 
     public FileFlightDaoImpl() {
