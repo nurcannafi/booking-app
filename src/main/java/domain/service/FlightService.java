@@ -4,8 +4,11 @@ import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
 import domain.exception.InvalidFlightOperationException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FlightService {
 
@@ -73,5 +76,14 @@ public class FlightService {
             throw new InvalidFlightOperationException("Departure location cannot be null or empty");
         }
         return flightDao.findFlightsByDepartureLocation(departureLocation);
+    }
+
+    public List<FlightEntity> searchFlights(String destination, String date, int numberOfPassengers) {
+        LocalDate searchDate = LocalDate.parse(date);
+        return flightDao.getAll().stream()
+                .filter(flight -> flight.getDestination().equalsIgnoreCase(destination))
+                .filter(flight -> flight.getDepartureTime().toLocalDate().isEqual(searchDate))
+                .filter(flight -> flight.getAvailableSeats() >= numberOfPassengers)
+                .collect(Collectors.toList());
     }
 }

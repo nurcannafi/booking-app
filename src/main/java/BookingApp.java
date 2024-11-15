@@ -1,2 +1,156 @@
+import domain.dao.BookingDao;
+import domain.dao.FlightDao;
+import domain.dao.impl.*;
+import domain.dto.BookingDto;
+import domain.entity.BookingEntity;
+import domain.entity.FlightEntity;
+import domain.exception.BookingNotFoundException;
+import domain.exception.BookingNotFoundForPassengerNameException;
+import domain.exception.InvalidBookingException;
+import domain.exception.InvalidFlightOperationException;
+import domain.service.BookingService;
+import domain.service.FlightService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Scanner;
+
 public class BookingApp {
+    public static void main(String[] args) {
+        FlightDao flightDaoInMemory = new InMemoryFlightDaoImpl();
+        BookingDao bookingDaoInMemory = new InMemoryBookingDaoImpl();
+
+//        FlightDao flightDaoFile = new FileFlightDaoImpl();
+//        BookingDao bookingDaoFile = new FileBookingDaoImpl();
+//
+//        FlightDao flightDaoPostgres = new PostgresFlightDaoImpl();
+//        BookingDao bookingDaoPostgres = new PostgresBookingDaoImpl();
+
+        FlightService flightService = new FlightService(flightDaoInMemory);
+        BookingService bookingService = new BookingService(bookingDaoInMemory, flightService);
+
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+
+        System.out.println("\n----Booking Application----");
+        while (!exit) {
+            System.out.println("1. Online-board (Flights from Kiev in the next 24 hours)");
+            System.out.println("2. Show flight info by flight ID");
+            System.out.println("3. Search and book a flight");
+            System.out.println("4. Cancel a booking");
+            System.out.println("5. My flights");
+            System.out.println("6. Exit");
+            System.out.println("Select an option : ");
+
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (option) {
+                case 1:
+                    try {
+                        System.out.println("\n---Online-board: Flights from Kiev in the next 24 hourse---");
+                        List<FlightEntity> flightsFromKiev = flightService.getAllFlights();
+                        flightsFromKiev.stream()
+                                .filter(flight -> flight.getDepartureLocation().equalsIgnoreCase("Kiev"))
+                                .filter(flight -> flight.getDepartureTime().isAfter(LocalDateTime.now()))
+                                .filter(flight -> flight.getDepartureTime().isBefore(LocalDateTime.now().plusHours(24)))
+                                .forEach(System.out::println);
+                    } catch (InvalidFlightOperationException e) {
+                        System.out.println("Error : " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    try {
+                        System.out.println("\nEnter flight Id to view details : ");
+                        String flightId = scanner.nextLine();
+                        flightService.getFlightById(flightId).
+                                orElseThrow(() -> new BookingNotFoundException(flightId));
+                    } catch (BookingNotFoundException e) {
+                        System.out.println("Error : " + e.getMessage());
+                    }
+                    break;
+                case 3:
+                    try {
+                        System.out.println("\nEnter flight search criteria : ");
+                        System.out.println("Destination : ");
+                        String destination = scanner.nextLine();
+                        System.out.println("Date (YYYY-MM-DD) : ");
+                        String date = scanner.nextLine();
+                        System.out.println("Number of passengers : ");
+                        int numberOfPassengers = scanner.nextInt();
+                        scanner.nextLine();
+
+                        List<FlightEntity> availableFlights =
+                                flightService.searchFlights(destination, date, numberOfPassengers);
+                        if (availableFlights.isEmpty()) {
+                            throw new InvalidFlightOperationException("No available flights found.");
+                        }
+
+                        System.out.println("\nAvailable Flights:");
+                        for (int i = 0; i < availableFlights.size(); i++) {
+                            System.out.println((i + 1) + ". " + availableFlights.get(i));
+                        }
+
+                        System.out.print("\nSelect flight number to book (or 0 to cancel): ");
+                        int selectedFlightIndex = scanner.nextInt() - 1;
+                        scanner.nextLine();
+
+                        if (selectedFlightIndex >= 0 && selectedFlightIndex < availableFlights.size()) {
+                            FlightEntity selectedFlight = availableFlights.get(selectedFlightIndex);
+                            System.out.print("\nEnter passenger names " +
+                                    "(comma separated, format: FirstName,LastName,Age): ");
+                            String passengersInput = scanner.nextLine();
+                            List<String> passengerNames = List.of(passengersInput.split(","));
+                            BookingDto bookingDto = new BookingDto("1", selectedFlight.getId(), passengerNames);
+                            boolean bookingAdded = bookingService.addBooking(bookingDto);
+                            if (bookingAdded) {
+                                System.out.println("Booking successful!");
+                            } else {
+                                throw new InvalidBookingException("Booking failed.");
+                            }
+                        }
+                    } catch (InvalidFlightOperationException ex) {
+                        System.out.println("Error: " + ex.getMessage());
+                    } catch (InvalidBookingException ex) {
+                        System.out.println("Error: " + ex.getMessage());
+                    }
+                    break;
+                case 4:
+                    try {
+                        System.out.print("\nEnter booking ID to cancel: ");
+                        String bookingId = scanner.nextLine();
+                        boolean canceled = bookingService.cancelBooking(bookingId);
+                        if (canceled) {
+                            System.out.println("Booking canceled successfully.");
+                        } else {
+                            throw new BookingNotFoundException(bookingId);
+                        }
+                    } catch (BookingNotFoundException ex) {
+                        System.out.println("Error: " + ex.getMessage());
+                    }
+                    break;
+                case 5:
+                    try {
+                        System.out.print("\nEnter your full name: ");
+                        String passengerName = scanner.nextLine();
+                        List<BookingEntity> bookings = bookingService.findBookingsByPassengerName(passengerName);
+                        if (bookings.isEmpty()) {
+                            throw new BookingNotFoundForPassengerNameException(passengerName);
+                        }
+                        System.out.println("\nYour bookings:");
+                        bookings.forEach(System.out::println);
+                    } catch (BookingNotFoundForPassengerNameException ex) {
+                        System.out.println("Error: " + ex.getMessage());
+                    }
+                    break;
+                case 6:
+                    exit = true;
+                    System.out.println("Exiting application...");
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+        scanner.close();
+    }
 }
