@@ -6,7 +6,6 @@ import domain.entity.FlightEntity;
 import exception.InvalidFlightOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.FlightService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

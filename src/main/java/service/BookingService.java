@@ -6,6 +6,7 @@ import domain.entity.FlightEntity;
 import domain.entity.PassengerEntity;
 import exception.BookingNotFoundException;
 import exception.InvalidBookingException;
+import exception.InvalidFlightOperationException;
 import model.dto.BookingDto;
 
 import java.util.List;
@@ -99,4 +100,5 @@ public class BookingService {
         BookingEntity bookingEntity = new BookingEntity(bookingDto.getId(), bookingDto.getFlightId(), passengers);
         return bookingDao.update(bookingEntity);
     }
+
 }
