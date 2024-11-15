@@ -34,6 +34,17 @@ public class BookingApp {
         FlightService flightService = new FlightService(flightDao);
         BookingService bookingService = new BookingService(bookingDao, flightService);
 
+        flightDao.add(new FlightEntity(LocalDateTime.now().plusHours(1), "Kiev",
+                "New York", 50));
+        flightDao.add(new FlightEntity(LocalDateTime.now().plusHours(2), "Kiev",
+                "Los Angeles", 75));
+        flightDao.add(new FlightEntity(LocalDateTime.now().plusHours(3), "Kiev",
+                "Tokyo", 60));
+        flightDao.add(new FlightEntity(LocalDateTime.now().plusHours(4), "Kiev",
+                "Sydney", 90));
+        flightDao.add(new FlightEntity(LocalDateTime.now().plusHours(5), "Kiev",
+                "Paris", 45));
+
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
