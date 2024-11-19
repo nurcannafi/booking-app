@@ -1,7 +1,7 @@
 package service;
 
 import domain.dao.BookingDao;
-import domain.dao.impl.InMemoryBookingDaoImpl;
+import domain.dao.impl.memory.InMemoryBookingDaoImpl;
 import domain.entity.BookingEntity;
 import domain.entity.PassengerEntity;
 import exception.InvalidBookingException;

@@ -1,5 +1,6 @@
 package domain.dao.impl;
 
+import domain.dao.impl.database.PostgresBookingDaoImpl;
 import domain.entity.BookingEntity;
 import domain.entity.PassengerEntity;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,9 +1,7 @@
 import domain.dao.BookingDao;
 import domain.dao.FlightDao;
-import domain.dao.impl.FileBookingDaoImpl;
-import domain.dao.impl.FileFlightDaoImpl;
-import domain.dao.impl.InMemoryBookingDaoImpl;
-import domain.dao.impl.InMemoryFlightDaoImpl;
+import domain.dao.impl.file.FileBookingDaoImpl;
+import domain.dao.impl.file.FileFlightDaoImpl;
 import model.dto.BookingDto;
 import domain.entity.BookingEntity;
 import domain.entity.FlightEntity;

@@ -1,4 +1,4 @@
-package domain.dao.impl;
+package domain.dao.impl.database;
 
 import domain.dao.FlightDao;
 import domain.entity.FlightEntity;
