@@ -49,6 +49,18 @@ class BookingServiceTests {
     }
 
     @Test
+    public void testGetAllBookings() {
+        BookingEntity booking1 = new BookingEntity(
+                "flight1", List.of(new PassengerEntity("John", "Doe", 30)));
+
+        bookingService.addBooking(new BookingDto("ab-1", "flight1", List.of("John,Doe,30")));
+
+        List<BookingEntity> bookings = bookingService.getAllBookings();
+
+        assertEquals(1, bookings.size());
+    }
+
+    @Test
     void testCancelBooking_ShouldReturnTrue_WhenValidBookingId() {
         BookingEntity bookingEntity = new BookingEntity("valid-id", null, List.of());
         bookingDao.add(bookingEntity);
