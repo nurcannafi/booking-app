@@ -1,11 +1,8 @@
 package controller;
 
-import domain.dao.impl.InMemoryBookingDaoImpl;
-import domain.dao.impl.InMemoryFlightDaoImpl;
+import domain.dao.impl.memory.InMemoryBookingDaoImpl;
+import domain.dao.impl.memory.InMemoryFlightDaoImpl;
 import domain.entity.BookingEntity;
-import domain.entity.FlightEntity;
-import domain.entity.PassengerEntity;
-import exception.BookingNotFoundException;
 import exception.InvalidBookingException;
 import model.dto.BookingDto;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,7 @@
-package domain.dao.impl;
+package domain.dao.impl.memory;
 
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;
-import domain.entity.PassengerEntity;
 
 import java.util.Map;
 import java.util.HashMap;

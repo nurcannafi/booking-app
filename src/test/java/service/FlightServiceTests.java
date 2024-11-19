@@ -1,7 +1,7 @@
 package service;
 
 import domain.dao.FlightDao;
-import domain.dao.impl.InMemoryFlightDaoImpl;
+import domain.dao.impl.memory.InMemoryFlightDaoImpl;
 import domain.entity.FlightEntity;
 import exception.InvalidFlightOperationException;
 import org.junit.jupiter.api.BeforeEach;

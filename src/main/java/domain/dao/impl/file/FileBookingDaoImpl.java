@@ -1,4 +1,4 @@
-package domain.dao.impl;
+package domain.dao.impl.file;
 
 import domain.dao.BookingDao;
 import domain.entity.BookingEntity;

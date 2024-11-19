@@ -6,7 +6,7 @@ import exception.InvalidFlightOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.FlightService;
-import domain.dao.impl.InMemoryFlightDaoImpl;
+import domain.dao.impl.memory.InMemoryFlightDaoImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;

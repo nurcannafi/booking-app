@@ -1,5 +1,6 @@
 package domain.dao.impl;
 
+import domain.dao.impl.database.PostgresFlightDaoImpl;
 import domain.entity.FlightEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
