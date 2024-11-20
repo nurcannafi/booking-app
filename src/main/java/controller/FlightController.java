@@ -28,8 +28,8 @@ public class FlightController {
         return flight.get().toString();
     }
 
-    public List<FlightEntity> getAllFlights() {
-        return flightService.getAllFlights();
+    public List<FlightEntity> getAllFlightsin24hours() {
+        return flightService.getAllFlightsin24hours();
     }
 
     public List<FlightEntity> findFlightsByDestination(String destination) throws IllegalAccessException {

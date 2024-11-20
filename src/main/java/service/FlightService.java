@@ -31,7 +31,8 @@ public class FlightService {
         return flightDao.getById(id);
     }
 
-    public List<FlightEntity> getAllFlights() {
+
+    public List<FlightEntity> getAllFlightsin24hours(){
         return flightDao.getAll();
     }
 
