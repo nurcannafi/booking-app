@@ -82,7 +82,7 @@ public class BookingApp {
     private static void displayOnlineBoard(FlightService flightService) {
         try {
             System.out.println("\n---Online-board: Flights from Kiev in the next 24 hours---");
-            List<FlightEntity> flightsFromKiev = flightService.getAllFlightsin24hours();
+            List<FlightEntity> flightsFromKiev = flightService.getAllFlightsIn24hours();
             flightsFromKiev.stream()
                     .filter(flight -> flight.getDepartureLocation().equalsIgnoreCase("Kiev"))
                     .filter(flight -> flight.getDepartureTime().isAfter(LocalDateTime.now()))

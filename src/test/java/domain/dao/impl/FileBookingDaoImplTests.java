@@ -31,7 +31,8 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testAddAndGetById() {
-        List<PassengerEntity> passengers = List.of(new PassengerEntity("Leo", "Messi", 35));
+        List<PassengerEntity> passengers = List.of(
+                new PassengerEntity("Leo", "Messi", 35, 17));
         BookingEntity booking = new BookingEntity("1", "FL100", passengers);
         assertTrue(bookingDao.add(booking));
 
@@ -44,9 +45,10 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testGetAll() {
-        List<PassengerEntity> passengers1 = List.of(new PassengerEntity("Leo", "Messi", 35));
-        List<PassengerEntity> passengers2 = List.of(new PassengerEntity("Cristiano", "Ronaldo"
-                , 37));
+        List<PassengerEntity> passengers1 = List.of(
+                new PassengerEntity("Leo", "Messi", 35, 17));
+        List<PassengerEntity> passengers2 = List.of(
+                new PassengerEntity("Cristiano", "Ronaldo", 37, 13));
 
         bookingDao.add(new BookingEntity("1", "FL100", passengers1));
         bookingDao.add(new BookingEntity("2", "FL101", passengers2));
@@ -57,7 +59,8 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testUpdate() {
-        List<PassengerEntity> passengers = List.of(new PassengerEntity("Leo", "Messi", 35));
+        List<PassengerEntity> passengers = List.of
+                (new PassengerEntity("Leo", "Messi", 35, 17));
         BookingEntity booking = new BookingEntity("1", "FL100", passengers);
         assertTrue(bookingDao.add(booking));
 
@@ -71,7 +74,8 @@ public class FileBookingDaoImplTests {
 
     @Test
     void testCancelBooking() {
-        List<PassengerEntity> passengers = List.of(new PassengerEntity("Leo", "Messi", 35));
+        List<PassengerEntity> passengers = List.of(
+                new PassengerEntity("Leo", "Messi", 35, 17));
         bookingDao.add(new BookingEntity("1", "FL100", passengers));
         assertTrue(bookingDao.cancelBooking("1"));
 

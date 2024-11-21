@@ -38,9 +38,11 @@ public class PostgresBookingDaoImpl implements BookingDao {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, booking.getId());
             statement.setString(2, booking.getFlightId());
-            statement.setString(3, String.join(",", booking.getPassengers().stream()
-                    .map(passenger -> passenger.getFirstName() + " " + passenger.getLastName())
-                    .collect(Collectors.toList())));
+            String passengerData = booking.getPassengers().stream()
+                    .map(passenger -> passenger.getId() + " " + passenger.getFirstName() + " " +
+                            passenger.getLastName() + " " + passenger.getAge())
+                    .collect(Collectors.joining(","));
+            statement.setString(3, passengerData);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,7 +59,15 @@ public class PostgresBookingDaoImpl implements BookingDao {
             if (resultSet.next()) {
                 String passengerNamesString = resultSet.getString("passenger_names");
                 List<PassengerEntity> passengerEntities = Arrays.stream(passengerNamesString.split(","))
-                        .map(name -> new PassengerEntity(name.split(" ")[0], name.split(" ")[1], -1))
+                        .map(data -> {
+                            String[] parts = data.split(" ");
+                            return new PassengerEntity(
+                                    parts[1],
+                                    parts[2],
+                                    Integer.parseInt(parts[3]),
+                                    Integer.parseInt(parts[0])
+                            );
+                        })
                         .collect(Collectors.toList());
                 BookingEntity booking = new BookingEntity(
                         resultSet.getString("id"),
@@ -81,7 +91,15 @@ public class PostgresBookingDaoImpl implements BookingDao {
             while (resultSet.next()) {
                 String passengerNamesString = resultSet.getString("passenger_names");
                 List<PassengerEntity> passengerEntities = Arrays.stream(passengerNamesString.split(","))
-                        .map(name -> new PassengerEntity(name.split(" ")[0], name.split(" ")[1], -1))
+                        .map(data -> {
+                            String[] parts = data.split(" ");
+                            return new PassengerEntity(
+                                    parts[1],
+                                    parts[2],
+                                    Integer.parseInt(parts[3]),
+                                    Integer.parseInt(parts[0])
+                            );
+                        })
                         .collect(Collectors.toList());
                 bookings.add(new BookingEntity(
                         resultSet.getString("id"),
@@ -100,10 +118,10 @@ public class PostgresBookingDaoImpl implements BookingDao {
         String query = "UPDATE bookings SET flight_id = ?, passenger_names = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, booking.getFlightId());
-            String passengersNames = booking.getPassengers().stream()
-                    .map(p -> p.getFirstName() + " " + p.getLastName())
+            String passengerData = booking.getPassengers().stream()
+                    .map(p -> p.getId() + " " + p.getFirstName() + " " + p.getLastName() + " " + p.getAge())
                     .collect(Collectors.joining(","));
-            statement.setString(2, String.join(",", passengersNames));
+            statement.setString(2, passengerData);
             statement.setString(3, booking.getId());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -134,8 +152,18 @@ public class PostgresBookingDaoImpl implements BookingDao {
             while (rs.next()) {
                 String passengerNamesString = rs.getString("passenger_names");
                 List<PassengerEntity> passengerEntities = Arrays.stream(passengerNamesString.split(","))
-                        .map(name -> new PassengerEntity(name.split(" ")[0], name.split(" ")[1], -1))
+                        .map(data -> {
+                            String[] parts = data.split(":");
+                            String[] nameAge = parts[1].split(" ");
+                            return new PassengerEntity(
+                                    nameAge[0],
+                                    nameAge[1],
+                                    Integer.parseInt(nameAge[2]),
+                                    Integer.parseInt(parts[0])
+                            );
+                        })
                         .collect(Collectors.toList());
+
                 bookings.add(new BookingEntity(
                         rs.getString("id"),
                         rs.getString("flight_id"),
@@ -147,6 +175,7 @@ public class PostgresBookingDaoImpl implements BookingDao {
         }
         return bookings;
     }
+
 
     @Override
     public boolean cancelBooking(String bookingId) {

@@ -23,7 +23,7 @@ public class BookingService {
     }
 
     public List<FlightEntity> searchFlights(String destination, String date, int numberOfPeople) {
-        List<FlightEntity> allFlights = flightService.getAllFlights();
+        List<FlightEntity> allFlights = flightService.getAllFlightsIn24hours();
         return allFlights.stream()
                 .filter(flight -> flight.getDestination().equals(destination) && flight.getDepartureTime().equals(date))
                 .filter(flight -> flight.getAvailableSeats() >= numberOfPeople)
@@ -37,15 +37,16 @@ public class BookingService {
             List<PassengerEntity> passengers = bookingDto.getPassengerNames().stream()
                     .map(name -> {
                         String[] passengerData = name.split(",");
-                        if (passengerData.length == 3) {
-                            String firstName = passengerData[0];
-                            String lastName = passengerData[1];
-                            int age = Integer.parseInt(passengerData[2]);
-                            return new PassengerEntity(firstName, lastName, age);
+                        if (passengerData.length == 4) {
+                            int id = Integer.parseInt(passengerData[0]);
+                            String firstName = passengerData[1];
+                            String lastName = passengerData[2];
+                            int age = Integer.parseInt(passengerData[3]);
+                            return new PassengerEntity(firstName, lastName, age, id);
                         }
                         return null;
                     })
-                    .filter(passenger -> passenger != null)
+                    .filter(Objects::nonNull)
                     .toList();
 
             BookingEntity bookingEntity = new BookingEntity(bookingDto.getFlightId(), passengers);
@@ -53,6 +54,7 @@ public class BookingService {
         }
         return false;
     }
+
 
     public Optional<BookingEntity> getBookingById(String id) {
         return Optional.ofNullable(bookingDao.getById(id))
@@ -85,11 +87,12 @@ public class BookingService {
         List<PassengerEntity> passengers = bookingDto.getPassengerNames().stream()
                 .map(name -> {
                     String[] passengerData = name.split(",");
-                    if (passengerData.length == 3) {
+                    if (passengerData.length == 4) {
                         String firstName = passengerData[0];
                         String lastName = passengerData[1];
                         int age = Integer.parseInt(passengerData[2]);
-                        return new PassengerEntity(firstName, lastName, age);
+                        int id = Integer.parseInt(passengerData[3]);
+                        return new PassengerEntity(firstName, lastName, age, id);
                     }
                     return null;
                 })

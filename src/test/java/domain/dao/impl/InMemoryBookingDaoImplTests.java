@@ -24,7 +24,7 @@ public class InMemoryBookingDaoImplTests {
 
     @Test
     void testAddAndGetById() {
-        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36);
+        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36, 17);
 
         BookingEntity booking = new BookingEntity("1", "FL100", List.of(passenger1));
 
@@ -40,8 +40,8 @@ public class InMemoryBookingDaoImplTests {
 
     @Test
     void testGetAll() {
-        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36);
-        PassengerEntity passenger2 = new PassengerEntity("Cristiano", "Ronaldo", 39);
+        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36, 17);
+        PassengerEntity passenger2 = new PassengerEntity("Cristiano", "Ronaldo", 39, 13);
 
         bookingDao.add(new BookingEntity("1", "FL100", List.of(passenger1)));
         bookingDao.add(new BookingEntity("2", "FL101", List.of(passenger2)));
@@ -52,7 +52,7 @@ public class InMemoryBookingDaoImplTests {
 
     @Test
     void testUpdate() {
-        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36);
+        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36, 17);
         BookingEntity booking = new BookingEntity("1", "FL100", List.of(passenger1));
         assertTrue(bookingDao.add(booking));
 
@@ -66,7 +66,7 @@ public class InMemoryBookingDaoImplTests {
 
     @Test
     void testCancelBooking() {
-        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36);
+        PassengerEntity passenger1 = new PassengerEntity("Leo", "Messi", 36, 17);
         bookingDao.add(new BookingEntity("1", "FL100", List.of(passenger1)));
 
         assertTrue(bookingDao.cancelBooking("1"));
