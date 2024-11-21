@@ -5,11 +5,13 @@ public class PassengerEntity {
     private String firstName;
     private String lastName;
     private int age;
+    private int id;
 
-    public PassengerEntity(String firstName, String lastName, int age) {
+    public PassengerEntity(String firstName, String lastName, int age, int id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -34,6 +36,13 @@ public class PassengerEntity {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

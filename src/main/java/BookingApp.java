@@ -82,7 +82,7 @@ public class BookingApp {
     private static void displayOnlineBoard(FlightService flightService) {
         try {
             System.out.println("\n---Online-board: Flights from Kiev in the next 24 hours---");
-            List<FlightEntity> flightsFromKiev = flightService.getAllFlights();
+            List<FlightEntity> flightsFromKiev = flightService.getAllFlightsin24hours();
             flightsFromKiev.stream()
                     .filter(flight -> flight.getDepartureLocation().equalsIgnoreCase("Kiev"))
                     .filter(flight -> flight.getDepartureTime().isAfter(LocalDateTime.now()))
@@ -156,8 +156,6 @@ public class BookingApp {
             boolean canceled = bookingService.cancelBooking(bookingId);
             if (canceled) {
                 System.out.println("Booking canceled successfully.");
-            } else {
-                throw new BookingNotFoundException(bookingId);
             }
         } catch (BookingNotFoundException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -170,7 +168,7 @@ public class BookingApp {
             String passengerName = scanner.nextLine();
             List<BookingEntity> bookings = bookingService.findBookingsByPassengerName(passengerName);
             if (bookings.isEmpty()) {
-                throw new BookingNotFoundForPassengerNameException(passengerName);
+                System.out.println("The related  passenger don't have any booking !!");
             }
             System.out.println("\nYour bookings:");
             bookings.forEach(System.out::println);
