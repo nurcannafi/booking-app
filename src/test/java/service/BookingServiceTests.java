@@ -51,7 +51,7 @@ class BookingServiceTests {
     @Test
     public void testGetAllBookings() {
         BookingEntity booking1 = new BookingEntity(
-                "flight1", List.of(new PassengerEntity("John", "Doe", 30)));
+                "flight1", List.of(new PassengerEntity("John", "Doe", 30, 13)));
 
         bookingService.addBooking(new BookingDto("ab-1", "flight1", List.of("John,Doe,30")));
 
@@ -80,7 +80,7 @@ class BookingServiceTests {
     @Test
     void testUpdateBooking_ShouldReturnTrue_WhenValidBookingDto() {
         BookingEntity bookingEntity = new BookingEntity("valid-id", null,
-                List.of(new PassengerEntity("John", "Doe", 30)));
+                List.of(new PassengerEntity("John", "Doe", 30, 13)));
         bookingDao.add(bookingEntity);
 
         BookingDto bookingDto = new BookingDto("valid-id", "valid-flight-id", List.of("John,Doe,30"));

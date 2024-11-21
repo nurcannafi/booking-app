@@ -61,7 +61,7 @@ public class FlightServiceTests {
                 LocalDateTime.now().plusDays(1), "Kiev", "London", 50);
         flightDao.add(flight1);
         flightDao.add(flight2);
-        List<FlightEntity> allFlights = flightService.getAllFlights();
+        List<FlightEntity> allFlights = flightService.getAllFlightsIn24hours();
         assertEquals(2, allFlights.size());
     }
 

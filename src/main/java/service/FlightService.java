@@ -32,7 +32,7 @@ public class FlightService {
     }
 
 
-    public List<FlightEntity> getAllFlightsin24hours(){
+    public List<FlightEntity> getAllFlightsIn24hours(){
         return flightDao.getAll();
     }
 

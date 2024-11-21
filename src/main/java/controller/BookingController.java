@@ -49,7 +49,6 @@ public class BookingController {
     }
 
     private BookingDto convertToDto(BookingEntity bookingEntity) {
-        // Assuming BookingDto has a constructor that accepts BookingEntity
         return new BookingDto(bookingEntity.getId(), bookingEntity.getFlightId(),
                 bookingEntity.getPassengers().stream().map(PassengerEntity::toString).toList());
     }

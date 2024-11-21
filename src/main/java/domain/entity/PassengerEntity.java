@@ -41,13 +41,15 @@ public class PassengerEntity {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
 
     @Override
     public String toString() {
-        return String.format("PassengerEntity{firstName='%s', lastName='%s', age=%d}",
-                firstName, lastName, age);
+        return String.format("PassengerEntity{firstName='%s', lastName='%s', age=%d, id=%d}",
+                firstName, lastName, age, id);
     }
+
 }
