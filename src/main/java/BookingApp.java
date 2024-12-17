@@ -9,8 +9,12 @@ import exception.BookingNotFoundException;
 import exception.BookingNotFoundForPassengerNameException;
 import exception.InvalidBookingException;
 import exception.InvalidFlightOperationException;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import service.BookingService;
 import service.FlightService;
+import service.servlet.BookingServiceServlet;
+import service.servlet.FlightServiceServlet;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +22,10 @@ import java.util.Scanner;
 
 public class BookingApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+
+        startJettyServer();
+
         final FlightDao flightDao =
 //                                  new InMemoryFlightDaoImpl();
 //                                  new PostgresFlightDaoImpl();
@@ -177,4 +184,14 @@ public class BookingApp {
         }
     }
 
+    public static void startJettyServer() throws Exception {
+        Server server = new Server(8080);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
+        context.addServlet(FlightServiceServlet.class, "/api/flights");
+        context.addServlet(BookingServiceServlet.class, "/api/bookings");
+        server.setHandler(context);
+        server.start();
+        System.out.println("Jetty server started at: http://localhost:8080/");
+    }
 }

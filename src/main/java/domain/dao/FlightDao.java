@@ -12,5 +12,5 @@ public interface FlightDao extends Dao<FlightEntity> {
 
     List<FlightEntity> findAvailableFlights(int minimumSeats);
 
-    boolean updateAvailableSeats(String fligthId, int newAvailableSeats);
+    boolean updateAvailableSeats(String flightId, int newAvailableSeats);
 }
